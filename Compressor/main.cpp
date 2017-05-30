@@ -29,7 +29,7 @@ void residuo(unsigned int img[][512], unsigned int img_pred[][512], unsigned int
     
     for(int i = 0; i <512; i++){
         for(int j  = 0; j < 512; j++){
-            img_residuo[i][j] = img[i][j] - img_pred[i][j];
+            img_residuo[i][j] = img_pred[i][j] - img[i][j];
         }
     }
 }
