@@ -85,16 +85,6 @@ int main(int argc, const char *argv[])
 
 	abre_imagem(imagem_entrada, image);
 
-	ofstream fout("testeimage.raw");
-	for (int i = 0; i < 512; i++)
-	{
-		for (int j = 0; j < 512; j++)
-		{
-			fout << (unsigned char)image[i][j];
-		}
-	}
-	fout.close();
-
 	// faz predição, gera imagem resíduo e as salva em arquivos
 	cod_pred(image);
 
