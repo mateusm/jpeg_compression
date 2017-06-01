@@ -1,20 +1,30 @@
-//
-//  main.cpp
-//  Compressor
-//
-//  Created by Mateus Mesturini Meruvia on 5/29/17.
-//  Copyright © 2017 Mateus Mesturini Meruvia. All rights reserved.
-//
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "../include/cod_pred.hpp"
 #include "../include/dec_pred.hpp"
+#include "../include/jo_jpeg.h"
 
 using namespace std;
 
-void predicao(unsigned int img[][512], unsigned int img_pred[][512])
+#ifdef __linux__
+
+string imagem_pred = "./output/lena_pred.raw";
+string imagem_residuo = "./output/lena_residuo.raw";
+string imagem_entrada = "./lena.raw";
+const char *imagem_saida_jpeg = "./lena_jpeg.jpeg";
+
+#elif __APPLE__
+
+string imagem_pred = "./output/lena_pred.raw";
+string imagem_residuo = "./output/lena_residuo.raw";
+string imagem_entrada = "./lena.raw";
+const char *imagem_saida_jpeg = "./lena_jpeg.raw";
+
+#endif
+
+// em relação a primeira coluna
+void predicao(char img[][512], char img_pred[][512])
 {
 
 	for (int i = 0; i < 512; i++)
@@ -33,7 +43,7 @@ void predicao(unsigned int img[][512], unsigned int img_pred[][512])
 	}
 }
 
-void gerar_residuo(unsigned int img[][512], unsigned int img_pred[][512], unsigned int img_residuo[][512])
+void gerar_residuo(char img[][512], char img_pred[][512], char img_residuo[][512])
 {
 
 	for (int i = 0; i < 512; i++)
@@ -43,45 +53,48 @@ void gerar_residuo(unsigned int img[][512], unsigned int img_pred[][512], unsign
 			img_residuo[i][j] = img_pred[i][j] - img[i][j];
 		}
 	}
+
+	// salva resíduo em JPEG
+	bool status = jo_write_jpg(imagem_saida_jpeg, img_residuo, 512, 512, 1, 90);
+	if (status)
+		cout << "Codificação JPEG ok."
+			 << " Imagem " << imagem_saida_jpeg << " salva." << endl;
+	else
+		cout << "Codificação JPEG falhou." << endl;
 }
 
-void cod_pred(unsigned int image[512][512])
+void cod_pred(char image[512][512])
 {
-
-	string imagem_pred = "./output/lena_pred.raw";
-	string imagem_residuo = "./output/lena_residuo.raw";
-
-	unsigned int image_pred[512][512];
-	unsigned int image_residuo[512][512];
+	char image_pred[512][512];
+	char image_residuo[512][512];
 
 	predicao(image, image_pred);
 	gerar_residuo(image, image_pred, image_residuo);
 
-	ofstream fout(imagem_residuo);
+	ofstream fout(imagem_residuo, ios::binary);
 	ofstream fpred(imagem_pred);
 	for (int i = 0; i < 512; i++)
 	{
 		for (int j = 0; j < 512; j++)
 		{
-			fout << (unsigned char)image_residuo[i][j];
-			fpred << (unsigned char)image_pred[i][j];
+			fout << image_residuo[i][j];
+			fpred << image_pred[i][j];
 		}
 	}
-
 	fout.close();
 	fpred.close();
-	cout << imagem_pred << " e " << imagem_residuo << " salvas." << endl;
 
-	return;
+	cout << endl
+		 << "Predição finalizada." << endl;
+	cout << imagem_pred << " e " << imagem_residuo << " salvas." << endl
+		 << endl;
 }
 
 int main(int argc, const char *argv[])
 {
-	string imagem_entrada = "./lena.raw";
 
-	char fileName[80] = "/Users/mateusmesturini/Downloads/lena.raw"; //512x512 image
-
-	unsigned int image[512][512];
+	char image[512][512];
+	char image_residuo[512][512];
 
 	abre_imagem(imagem_entrada, image);
 

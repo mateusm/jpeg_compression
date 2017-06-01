@@ -27,7 +27,7 @@ obj/%.o: src/%.cpp
 
 # Limpa .obj's e exec. Execute com: make clean
 clean:
-	rm -f  $(OBJDIR)/*.o $(EXECUTABLE) ./output/*
+	rm -f  $(OBJDIR)/*.o $(EXECUTABLE) ./output/* lena_jpeg.jpeg
 
 run: clean all
 	./cod_pred

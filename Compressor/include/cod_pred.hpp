@@ -1,4 +1,6 @@
 #pragma once
 
-void predicao(unsigned int img[][512], unsigned int img_pred[][512]);
-void residuo(unsigned int img[][512], unsigned int img_pred[][512], unsigned int img_residuo[][512]);
+#include <iostream>
+
+void predicao(char img[][512], char img_pred[][512]);
+void residuo(char img[][512], char img_pred[][512], char img_residuo[][512]);
