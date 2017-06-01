@@ -1,4 +1,4 @@
-# huffman-coding
+# jpeg_compression
 
 Implementação da Codificação Preditiva + JPEG
 
